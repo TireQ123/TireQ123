@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+.venv_jarvis/
+build/
+dist/
+
+# Jarvis runtime artifacts (zmieniają się co sesję)
+memory/.sync_state.json
+memory/.scheduler_state.json
+memory/.monitor_state.json
+memory/scheduler.log
+memory/chroma_db/
+
+# Sekrety
+.env
+*.key
+telegram_token.txt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Trening (duże pliki / lokalne wyniki)
+training/jarvis_lora/
+training/lora_output/
+*.safetensors

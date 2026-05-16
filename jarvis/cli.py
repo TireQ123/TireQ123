@@ -171,6 +171,10 @@ def do_briefing(_args) -> None:
     print(result["result"])
 
 
+def do_telegram(_args) -> None:
+    python("jarvis/integrations/telegram_bot.py")
+
+
 def do_schedule(args) -> None:
     sub = getattr(args, "sub", "list")
     if sub == "list":
@@ -255,6 +259,9 @@ def main() -> None:
     # briefing
     sub.add_parser("briefing", help="Poranny briefing TireQ")
 
+    # telegram
+    sub.add_parser("telegram", help="Telegram Bot — zdalny dostęp z telefonu")
+
     # schedule
     p_sched = sub.add_parser("schedule", help="Zadania w tle (scheduler)")
     p_sched.add_argument("sub", nargs="?",
@@ -281,6 +288,7 @@ def main() -> None:
         "multi":    do_multi,
         "briefing": do_briefing,
         "schedule": do_schedule,
+        "telegram": do_telegram,
     }
     dispatch.get(args.cmd, do_chat)(args)
 
