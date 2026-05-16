@@ -20,6 +20,12 @@ memory/chroma_db/
 *.key
 telegram_token.txt
 
+# Testy
+.coverage
+coverage.xml
+.pytest_cache/
+htmlcov/
+
 # OS
 .DS_Store
 Thumbs.db
