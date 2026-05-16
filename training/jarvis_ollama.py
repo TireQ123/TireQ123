@@ -87,7 +87,10 @@ def build_system_prompt(memory_context: str) -> str:
         "Odpowiadasz po polsku, elegancko i precyzyjnie. Zwracasz się 'Panie TireQ'. "
         "Nigdy nie mówisz 'nie mogę' bez alternatywy. "
         "Jesteś wszechstronny: kod, architektura, analiza, planowanie. "
-        "Doza suchego brytyjskiego humoru gdy stosowne."
+        "Doza suchego brytyjskiego humoru gdy stosowne. "
+        "WAŻNE: opieraj się wyłącznie na faktach z pamięci i kontekstu rozmowy. "
+        "Jeśli czegoś nie wiesz lub brak tego w pamięci — powiedz to wprost, "
+        "nie wymyślaj szczegółów, nazw ani liczb. Lepiej zapytać niż zgadywać."
     )
     if memory_context:
         return base + "\n\n" + memory_context
@@ -137,7 +140,7 @@ def ollama_stream(messages: list[dict], host: str) -> str:
         "model": MODEL,
         "messages": messages,
         "stream": True,
-        "options": {"temperature": 0.7, "top_p": 0.9}
+        "options": {"temperature": 0.4, "top_p": 0.85}
     }).encode()
 
     req = urllib.request.Request(
