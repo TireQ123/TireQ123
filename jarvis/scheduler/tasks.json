@@ -1,0 +1,54 @@
+{
+  "tasks": [
+    {
+      "id": "morning_briefing",
+      "name": "Poranny briefing",
+      "type": "plugin",
+      "action": "tireq_briefing",
+      "params": {},
+      "schedule": "08:00",
+      "repeat": "daily",
+      "enabled": true
+    },
+    {
+      "id": "memory_cleanup",
+      "name": "Tygodniowe czyszczenie pamięci",
+      "type": "script",
+      "action": "scripts/memory_cleanup.py",
+      "params": {},
+      "schedule": "sunday 10:00",
+      "repeat": "weekly",
+      "enabled": true
+    },
+    {
+      "id": "rag_reindex",
+      "name": "Reindeksowanie RAG",
+      "type": "script",
+      "action": "scripts/rag_index.py",
+      "params": {"args": ["--delta"]},
+      "schedule": "every 6h",
+      "repeat": "interval",
+      "enabled": true
+    },
+    {
+      "id": "calendar_remind",
+      "name": "Sprawdzenie przypomnień kalendarza",
+      "type": "plugin",
+      "action": "calendar_remind",
+      "params": {},
+      "schedule": "every 1h",
+      "repeat": "interval",
+      "enabled": true
+    },
+    {
+      "id": "git_monitor",
+      "name": "Monitoring repozytorium",
+      "type": "script",
+      "action": "jarvis/monitor/watcher.py",
+      "params": {"args": ["--once"]},
+      "schedule": "every 30m",
+      "repeat": "interval",
+      "enabled": true
+    }
+  ]
+}

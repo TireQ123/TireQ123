@@ -1,0 +1,18 @@
+# J.A.R.V.I.S. Voice — wymagania dla interfejsu głosowego
+# Instaluj po requirements_gpu.txt lub osobno
+
+# Speech-to-Text (lokalnie, offline, GPU-accelerated)
+faster-whisper>=1.0.0
+
+# Text-to-Speech (edge-tts = głosy Microsoft Neural, wymaga internetu)
+edge-tts>=6.1.0
+
+# Alternatywa TTS offline (pyttsx3 - prostszy, gorszej jakości)
+# pyttsx3>=2.90
+
+# Nagrywanie mikrofonu
+sounddevice>=0.4.6
+numpy>=1.24.0
+
+# Odtwarzanie audio
+pygame>=2.5.0

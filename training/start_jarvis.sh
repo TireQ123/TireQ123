@@ -39,8 +39,7 @@ if ! ollama list | grep -q "jarvis"; then
 fi
 
 echo " Systemy aktywne. Możesz zacząć rozmowę."
-echo " Wpisz /bye aby zakończyć."
 echo " =========================================="
 echo ""
 
-ollama run jarvis
+python3 "$SCRIPT_DIR/jarvis_ollama.py"
