@@ -1,0 +1,80 @@
+{
+  "name": "jarvis-assistant",
+  "displayName": "J.A.R.V.I.S.",
+  "description": "Osobisty asystent AI TireQ bezpośrednio w VS Code",
+  "version": "1.0.0",
+  "engines": { "vscode": "^1.85.0" },
+  "categories": ["AI", "Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "jarvis.openChat",
+        "title": "J.A.R.V.I.S.: Otwórz czat",
+        "icon": "$(robot)"
+      },
+      {
+        "command": "jarvis.askSelection",
+        "title": "J.A.R.V.I.S.: Zapytaj o zaznaczony kod"
+      },
+      {
+        "command": "jarvis.runAgent",
+        "title": "J.A.R.V.I.S.: Uruchom agenta"
+      },
+      {
+        "command": "jarvis.showMemory",
+        "title": "J.A.R.V.I.S.: Pokaż pamięć"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "jarvis.openChat",
+        "key": "ctrl+shift+j",
+        "mac": "cmd+shift+j"
+      },
+      {
+        "command": "jarvis.askSelection",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a",
+        "when": "editorHasSelection"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "jarvis-sidebar",
+          "title": "J.A.R.V.I.S.",
+          "icon": "$(robot)"
+        }
+      ]
+    },
+    "views": {
+      "jarvis-sidebar": [
+        { "type": "webview", "id": "jarvis.chatView", "name": "Czat" },
+        { "type": "webview", "id": "jarvis.memoryView", "name": "Pamięć" }
+      ]
+    },
+    "configuration": {
+      "title": "J.A.R.V.I.S.",
+      "properties": {
+        "jarvis.apiUrl": {
+          "type": "string",
+          "default": "http://localhost:8000",
+          "description": "URL serwera Jarvis API"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "@vscode/vsce": "^2.0.0"
+  }
+}
