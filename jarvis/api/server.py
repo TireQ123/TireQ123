@@ -28,6 +28,7 @@ sys.path.insert(0, str(ROOT))
 try:
     from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
     from fastapi.middleware.cors import CORSMiddleware
+    from fastapi.responses import HTMLResponse
     from pydantic import BaseModel
     import uvicorn
 except ImportError:
@@ -37,6 +38,7 @@ except ImportError:
 from jarvis.core.tools import memory_read, memory_save, execute_tool
 from jarvis.core.agent import run_agent
 from jarvis.plugins import registry
+from jarvis.api.dashboard import DASHBOARD_HTML, get_dashboard_data
 
 # ── Startup ───────────────────────────────────────────────────────────────────
 
@@ -97,6 +99,16 @@ def _ollama(messages: list[dict]) -> str:
 
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
+
+@app.get("/dashboard", response_class=HTMLResponse)
+def dashboard():
+    return DASHBOARD_HTML
+
+
+@app.get("/dashboard/data")
+def dashboard_data():
+    return get_dashboard_data()
+
 
 @app.get("/health")
 def health():

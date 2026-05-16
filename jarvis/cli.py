@@ -175,6 +175,12 @@ def do_telegram(_args) -> None:
     python("jarvis/integrations/telegram_bot.py")
 
 
+def do_dashboard(_args) -> None:
+    print("[JARVIS] Dashboard: http://localhost:8000/dashboard")
+    print("[JARVIS] Uruchamiam serwer...\n")
+    python("jarvis/api/server.py")
+
+
 def do_schedule(args) -> None:
     sub = getattr(args, "sub", "list")
     if sub == "list":
@@ -262,6 +268,9 @@ def main() -> None:
     # telegram
     sub.add_parser("telegram", help="Telegram Bot — zdalny dostęp z telefonu")
 
+    # dashboard
+    sub.add_parser("dashboard", help="Dashboard webowy (przeglądarka)")
+
     # schedule
     p_sched = sub.add_parser("schedule", help="Zadania w tle (scheduler)")
     p_sched.add_argument("sub", nargs="?",
@@ -289,6 +298,7 @@ def main() -> None:
         "briefing": do_briefing,
         "schedule": do_schedule,
         "telegram": do_telegram,
+        "dashboard": do_dashboard,
     }
     dispatch.get(args.cmd, do_chat)(args)
 
