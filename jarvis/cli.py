@@ -171,6 +171,19 @@ def do_briefing(_args) -> None:
     print(result["result"])
 
 
+def do_schedule(args) -> None:
+    sub = getattr(args, "sub", "list")
+    if sub == "list":
+        python("jarvis/scheduler/engine.py", "--list")
+    elif sub == "start":
+        print("[JARVIS] Scheduler daemon uruchomiony. Ctrl+C aby zatrzymać.")
+        python("jarvis/scheduler/engine.py")
+    elif sub == "once":
+        python("jarvis/scheduler/engine.py", "--once")
+    elif sub == "run" and args.value:
+        python("jarvis/scheduler/engine.py", "--run", args.value[0])
+
+
 def do_train(_args) -> None:
     print("[JARVIS] Zbieram dane treningowe z sesji...")
     python("scripts/training_collect.py", "--all-sessions")
@@ -242,6 +255,12 @@ def main() -> None:
     # briefing
     sub.add_parser("briefing", help="Poranny briefing TireQ")
 
+    # schedule
+    p_sched = sub.add_parser("schedule", help="Zadania w tle (scheduler)")
+    p_sched.add_argument("sub", nargs="?",
+                         choices=["list", "start", "once", "run"], default="list")
+    p_sched.add_argument("value", nargs="*")
+
     # train
     sub.add_parser("train", help="Zbierz i eksportuj dane treningowe")
 
@@ -261,6 +280,7 @@ def main() -> None:
         "train":    do_train,
         "multi":    do_multi,
         "briefing": do_briefing,
+        "schedule": do_schedule,
     }
     dispatch.get(args.cmd, do_chat)(args)
 
