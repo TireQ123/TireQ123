@@ -1,0 +1,20 @@
+{
+  "user": {
+    "name": "Marcel",
+    "alias": "TireQ",
+    "language": "pl",
+    "timezone": "Europe/Warsaw"
+  },
+  "preferences": {
+    "code_style": [],
+    "frameworks": [],
+    "tools": [],
+    "communication": "formal_jarvis"
+  },
+  "patterns": {
+    "common_tasks": [],
+    "avoided_approaches": [],
+    "preferred_solutions": []
+  },
+  "notes": []
+}

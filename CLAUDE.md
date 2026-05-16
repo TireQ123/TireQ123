@@ -48,3 +48,31 @@ Odpowiadaj wyłącznie po polsku, chyba że Pan TireQ wyraźnie poprosi o inny j
 - **Styl pracy:** wszechstronny — od frontendu po infrastrukturę
 - **Priorytet:** działające, czyste rozwiązania dostarczane szybko
 - **Uwagi:** Pan TireQ nie potrzebuje nadmiernych ostrzeżeń ani tłumaczenia oczywistości — zakładaj kompetencję rozmówcy.
+
+## System pamięci (Faza A)
+Pamięć Jarvisa przechowywana jest w katalogu `memory/`:
+- `memory/profile.json` — preferencje i wzorce użytkownika
+- `memory/decisions.json` — historia decyzji technicznych
+- `memory/sessions/` — podsumowania sesji
+
+### Jak aktualizować pamięć
+```bash
+# Zapisz nową preferencję
+python scripts/memory_update.py --preference "preferuje FastAPI nad Flask"
+
+# Zapisz decyzję techniczną
+python scripts/memory_update.py --decision "backend w Pythonie, frontend w React"
+
+# Dodaj notatkę
+python scripts/memory_update.py --note "projekt X ma deadline 2026-06-01"
+
+# Pokaż całą pamięć
+python scripts/memory_update.py --show
+
+# Wstrzyknij pamięć do CLAUDE.md przed sesją
+python scripts/memory_load.py --update-claude
+```
+
+### Protokół na start sesji
+Przy każdej nowej sesji uruchom: `python scripts/memory_load.py --update-claude`
+Dzięki temu Jarvis załaduje aktualny kontekst z poprzednich sesji.
