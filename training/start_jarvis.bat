@@ -40,9 +40,16 @@ if %errorlevel% neq 0 (
     echo.
 )
 
-:: Uruchom Jarvisa
+:: Uruchom Jarvisa z pamięcią
 echo  Systemy aktywne. Mozesz zaczac rozmowe.
-echo  Wpisz "exit" aby zakonczyc.
 echo  ==========================================
 echo.
-ollama run jarvis
+
+:: Sprawdź czy Python dostępny
+where python >nul 2>&1
+if %errorlevel% equ 0 (
+    python "%~dp0jarvis_ollama.py"
+) else (
+    echo  [INFO] Python niedostepny - uruchamiam bez pamieci
+    ollama run jarvis
+)
