@@ -42,8 +42,15 @@ def file_write(path: str, content: str) -> dict:
 def file_list(directory: str = ".") -> dict:
     try:
         p = Path(directory) if Path(directory).is_absolute() else ROOT / directory
-        files = [str(f.relative_to(ROOT)) for f in p.rglob("*")
-                 if f.is_file() and ".git" not in f.parts]
+        base = p if p.is_dir() else ROOT
+        files = []
+        for f in p.rglob("*"):
+            if not f.is_file() or ".git" in f.parts:
+                continue
+            try:
+                files.append(str(f.relative_to(ROOT)))
+            except ValueError:
+                files.append(str(f.relative_to(base)))
         return _ok(files[:100])
     except Exception as e:
         return _err(str(e))
