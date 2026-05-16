@@ -26,25 +26,31 @@ python -m pytest --cov=jarvis --cov=scripts --cov-report=term-missing
 | `test_weather_plugin.py` | jarvis.plugins.weather | API pogodowe (mock HTTP) |
 | `test_github_plugin.py` | jarvis.plugins.github | repos/issues/PR (mock HTTP) |
 | `test_scheduler_engine.py` | jarvis.scheduler.engine | execute_task, run_pending, weekly |
+| `test_memory_load.py` | memory_load | build_context, wstrzykiwanie do CLAUDE.md |
+| `test_memory_suggest.py` | memory_suggest | ekstrakcja, parsowanie, zapis sugestii |
+| `test_monitor_watcher.py` | jarvis.monitor.watcher | commity, duże pliki, sekrety, gałąź |
 
 ## Stan
 
-148 testów, wszystkie przechodzą. CI: `.github/workflows/tests.yml`
-(Python 3.11 + 3.12, coverage + lint).
+188 testów, wszystkie przechodzą. CI: `.github/workflows/tests.yml`
+(Python 3.11 + 3.12, coverage + lint). Pokrycie globalne: 47%.
 
 Pokrycie modułów priorytetowych:
 - `weather_plugin` — 97%
 - `dashboard.get_dashboard_data` — 94%
 - `github_plugin` — 94%
+- `memory_load` — 90%
 - `memory_cleanup` — 88%
+- `memory_suggest` — 78%
 - `scheduler.engine` — 71%
+- `monitor.watcher` — 68%
 - `jarvis.cli` — 66%
 - `rag_query._keyword_search` — pełne (gałąź `query()` wymaga ChromaDB)
 
 ## Priorytety dalszego pokrycia
 
 Najważniejsze nieprzetestowane obszary:
-- `memory_suggest` — heurystyki sugestii
-- `jarvis.monitor.watcher` — detekcja zmian w repo
 - `jarvis.core.multi_agent` — orkiestracja (wymaga mock Ollama)
-- `memory_load` — wstrzykiwanie do CLAUDE.md
+- `jarvis.api.server` — endpointy FastAPI
+- `scripts.rag_index` / `rag_inject` — indeksowanie ChromaDB
+- `scripts.training_generate` / `training_seed` — generowanie danych
