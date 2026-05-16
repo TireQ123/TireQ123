@@ -1,0 +1,23 @@
+# J.A.R.V.I.S. Fine-tuning — RTX 5060 8GB (Blackwell sm_120)
+# Instaluj w kolejności poniżej
+
+# 1. PyTorch z CUDA 12.8 (wymagane dla Blackwell RTX 50xx)
+--extra-index-url https://download.pytorch.org/whl/cu128
+torch>=2.5.0
+torchvision>=0.20.0
+
+# 2. Hugging Face stack
+transformers>=4.45.0
+datasets>=3.0.0
+accelerate>=0.34.0
+peft>=0.13.0
+trl>=0.11.0
+
+# 3. Kwantyzacja 4-bit (QLoRA)
+bitsandbytes>=0.44.0
+
+# 4. Monitoring GPU
+nvitop
+
+# 5. Eksport modelu
+safetensors>=0.4.0
