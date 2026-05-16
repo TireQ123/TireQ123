@@ -1,0 +1,8 @@
+{
+  "decisions": [
+    {
+      "date": "2026-05-16T17:16:41",
+      "decision": "budujemy system RAG z ChromaDB i sentence-transformers"
+    }
+  ]
+}

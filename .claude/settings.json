@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /home/user/TireQ123 && python3 scripts/memory_sync.py && python3 scripts/rag_index.py --delta && python3 scripts/rag_inject.py && [ -n \"$CLAUDE_TRANSCRIPT_PATH\" ] && python3 scripts/training_collect.py --transcript \"$CLAUDE_TRANSCRIPT_PATH\" || true"
+          }
+        ]
+      }
+    ]
+  }
+}
