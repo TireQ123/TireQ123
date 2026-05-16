@@ -36,7 +36,7 @@ if %errorlevel% neq 0 (
 ollama list 2>nul | findstr /i "jarvis" >nul 2>&1
 if %errorlevel% neq 0 (
     echo  [INFO] Pierwszy start — buduje model Jarvisa...
-    echo  [INFO] Pobieranie Mistral ~4GB - moze chwile potrwac.
+    echo  [INFO] Pobieranie llama3.1:8b ~4.9GB - moze chwile potrwac.
     echo.
     ollama create jarvis -f "%~dp0Modelfile"
     if %errorlevel% neq 0 (
