@@ -9,6 +9,8 @@ Użycie:
   python training/jarvis_ollama.py --host http://192.168.1.10:11434
 """
 
+from __future__ import annotations
+
 import argparse
 import json
 import sys
