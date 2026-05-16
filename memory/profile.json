@@ -14,7 +14,9 @@
   "patterns": {
     "common_tasks": [],
     "avoided_approaches": [],
-    "preferred_solutions": []
+    "preferred_solutions": [
+      "lokalny model embeddingów, bez zewnętrznych API"
+    ]
   },
   "notes": []
 }

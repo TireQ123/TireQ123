@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 scripts/memory_sync.py"
+            "command": "cd /home/user/TireQ123 && python3 scripts/memory_sync.py && python3 scripts/rag_index.py --delta && python3 scripts/rag_inject.py"
           }
         ]
       }
