@@ -39,35 +39,37 @@ python -m pytest --cov=jarvis --cov=scripts --cov-report=term-missing
 | `test_memory_sync.py` | memory_sync | normalize, similarity, extract, merge, throttle |
 | `test_training_collect.py` | training_collect | extract_text, is_quality_pair, score_pair, extract_pairs |
 | `test_training_format.py` | training_format | load_raw, format_openai/alpaca/huggingface, export |
+| `test_agent_run.py` | jarvis.core.agent | run_agent, ollama_chat, tool_override, verbose |
+| `test_tools_extra.py` | jarvis.core.tools | memory_read/save, web_search, shell timeout, file_list |
+| `test_tireq_plugin.py` | jarvis.plugins.tireq | briefing, project_init, daily_log, quick_commit, health_check |
+| `test_calendar_notes_extra.py` | calendar_plugin, notes_plugin | calendar_today/remind, note_read/search |
 
 ## Stan
 
-378 testów, wszystkie przechodzą. CI: `.github/workflows/tests.yml`
-(Python 3.11 + 3.12, coverage + lint). Pokrycie globalne: 70%.
+445 testów, wszystkie przechodzą. CI: `.github/workflows/tests.yml`
+(Python 3.11 + 3.12, coverage + lint). Pokrycie globalne: 76%.
 
 Pokrycie modułów priorytetowych:
 - `weather_plugin` — 97%
 - `github_plugin` — 94%
-- `dashboard.get_dashboard_data` — 94%
-- `plugins.__init__` — 93%
+- `dashboard` — 94%
+- `training_format` — 92%
 - `training_seed` — 92%
 - `rag_index` — 90%
 - `memory_load` — 90%
-- `memory_update` — 85%+
 - `memory_cleanup` — 88%
-- `memory_sync` — 80%+
-- `training_collect` — 80%+
-- `training_format` — 90%+
-- `rag_inject` — 78%
-- `memory_suggest` — 78%
-- `scheduler.engine` — 71%
+- `calendar_plugin` — 90%+
+- `notes_plugin` — 90%+
+- `tireq_plugin` — 70%+
+- `core/agent` — 80%+
+- `core/tools` — 85%+
+- `memory_sync` — 99%
+- `training_collect` — 81%
+- `api/server` — 75%
 - `monitor.watcher` — 68%
-- `jarvis.api.server` — 75%
-- `multi_agent` — 65%
 
 ## Priorytety dalszego pokrycia
 
-Pozostałe nieprzetestowane obszary (niski priorytet — wymagają zewnętrznych zależności):
-- `jarvis.plugins.tireq_plugin` — 19% (wymaga Telegram credentials)
-- `jarvis.integrations.telegram_bot` — 0% (wymaga Telegram API)
+Pozostałe obszary z niskim pokryciem (wymagają zewnętrznych zależności):
+- `jarvis.integrations.telegram_bot` — 0% (wymaga Telegram API — pominięte)
 - `scripts.rag_query` (gałąź `query()`) — wymaga ChromaDB z danymi
