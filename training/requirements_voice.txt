@@ -14,5 +14,5 @@ edge-tts>=6.1.0
 sounddevice>=0.4.6
 numpy>=1.24.0
 
-# Odtwarzanie audio
-pygame>=2.5.0
+# Odtwarzanie audio (>=2.6.1 wymagane dla Python 3.13 — brak wheel dla 2.5.x)
+pygame>=2.6.1
