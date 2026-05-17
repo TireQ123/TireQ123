@@ -35,33 +35,39 @@ python -m pytest --cov=jarvis --cov=scripts --cov-report=term-missing
 | `test_rag_index.py` | rag_index | stable_id, collect_documents, index_all (mock chromadb) |
 | `test_multi_agent.py` | jarvis.core.multi_agent | _parse_json, run_sub_agent, orchestrate (mock Ollama) |
 | `test_server.py` | jarvis.api.server | wszystkie endpointy FastAPI (TestClient) |
+| `test_memory_update.py` | memory_update | add_decision, add_preference, add_note, add_task, save_session |
+| `test_memory_sync.py` | memory_sync | normalize, similarity, extract, merge, throttle |
+| `test_training_collect.py` | training_collect | extract_text, is_quality_pair, score_pair, extract_pairs |
+| `test_training_format.py` | training_format | load_raw, format_openai/alpaca/huggingface, export |
 
 ## Stan
 
-276 testów, wszystkie przechodzą. CI: `.github/workflows/tests.yml`
-(Python 3.11 + 3.12, coverage + lint). Pokrycie globalne: 62%.
+378 testów, wszystkie przechodzą. CI: `.github/workflows/tests.yml`
+(Python 3.11 + 3.12, coverage + lint). Pokrycie globalne: 70%.
 
 Pokrycie modułów priorytetowych:
 - `weather_plugin` — 97%
+- `github_plugin` — 94%
+- `dashboard.get_dashboard_data` — 94%
+- `plugins.__init__` — 93%
 - `training_seed` — 92%
 - `rag_index` — 90%
 - `memory_load` — 90%
-- `github_plugin` — 94%
-- `plugins.__init__` — 93%
-- `dashboard.get_dashboard_data` — 94%
+- `memory_update` — 85%+
 - `memory_cleanup` — 88%
+- `memory_sync` — 80%+
+- `training_collect` — 80%+
+- `training_format` — 90%+
 - `rag_inject` — 78%
 - `memory_suggest` — 78%
 - `scheduler.engine` — 71%
 - `monitor.watcher` — 68%
-- `jarvis.api.server` — 65%+ (endpointy HTTP, WebSocket pominięty)
-- `multi_agent` — 70%+
-- `rag_query._keyword_search` — pełne (gałąź `query()` wymaga ChromaDB)
+- `jarvis.api.server` — 75%
+- `multi_agent` — 65%
 
 ## Priorytety dalszego pokrycia
 
-Pozostałe nieprzetestowane obszary (niski priorytet):
-- `jarvis.plugins.tireq_plugin` — 19% (wymaga pliku credentials / Telegram)
-- `scripts.memory_update` — 36% (CLI argparse, interaktywne)
-- `scripts.training_collect` / `training_format` — 39-43% (parse_transcript wymaga transkryptów)
-- `scripts.memory_sync` — 47% (orchestracja skryptów)
+Pozostałe nieprzetestowane obszary (niski priorytet — wymagają zewnętrznych zależności):
+- `jarvis.plugins.tireq_plugin` — 19% (wymaga Telegram credentials)
+- `jarvis.integrations.telegram_bot` — 0% (wymaga Telegram API)
+- `scripts.rag_query` (gałąź `query()`) — wymaga ChromaDB z danymi
