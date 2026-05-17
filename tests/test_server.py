@@ -79,12 +79,12 @@ def test_get_memory_returns_data(client):
 
 
 def test_post_memory_valid_key(client, monkeypatch):
-    import jarvis.core.tools as tools
+    import jarvis.api.server as srv
 
     def fake_save(key, value):
         return {"status": "ok", "result": f"Saved {key}={value}"}
 
-    monkeypatch.setattr(tools, "memory_save", fake_save)
+    monkeypatch.setattr(srv, "memory_save", fake_save)
     resp = client.post("/memory", json={"key": "decision", "value": "backend Python"})
     assert resp.status_code == 200
     data = resp.json()
@@ -93,12 +93,12 @@ def test_post_memory_valid_key(client, monkeypatch):
 
 
 def test_post_memory_error_returns_400(client, monkeypatch):
-    import jarvis.core.tools as tools
+    import jarvis.api.server as srv
 
     def fake_save(key, value):
         return {"status": "error", "result": "nieprawidłowy klucz"}
 
-    monkeypatch.setattr(tools, "memory_save", fake_save)
+    monkeypatch.setattr(srv, "memory_save", fake_save)
     resp = client.post("/memory", json={"key": "invalid", "value": "x"})
     assert resp.status_code == 400
 
