@@ -43,11 +43,16 @@ python -m pytest --cov=jarvis --cov=scripts --cov-report=term-missing
 | `test_tools_extra.py` | jarvis.core.tools | memory_read/save, web_search, shell timeout, file_list |
 | `test_tireq_plugin.py` | jarvis.plugins.tireq | briefing, project_init, daily_log, quick_commit, health_check |
 | `test_calendar_notes_extra.py` | calendar_plugin, notes_plugin | calendar_today/remind, note_read/search |
+| `test_cli_extra.py` | jarvis.cli | do_status, do_plugin, do_multi, do_briefing, do_schedule |
+| `test_agent_interactive.py` | jarvis.core.agent | ollama_chat success, interactive_mode |
+| `test_multi_agent_extra.py` | jarvis.core.multi_agent | verbose paths, tool exception, interactive_mode |
+| `test_monitor_extra.py` | jarvis.monitor.watcher | _run, run_once branches, watch_loop |
+| `test_scheduler_extra.py` | jarvis.scheduler.engine | _log, plugin/agent tasks, daemon_loop |
 
 ## Stan
 
-445 testów, wszystkie przechodzą. CI: `.github/workflows/tests.yml`
-(Python 3.11 + 3.12, coverage + lint). Pokrycie globalne: 76%.
+490 testów, wszystkie przechodzą. CI: `.github/workflows/tests.yml`
+(Python 3.11 + 3.12, coverage + lint). Pokrycie globalne: 82%.
 
 Pokrycie modułów priorytetowych:
 - `weather_plugin` — 97%
@@ -58,18 +63,22 @@ Pokrycie modułów priorytetowych:
 - `rag_index` — 90%
 - `memory_load` — 90%
 - `memory_cleanup` — 88%
-- `calendar_plugin` — 90%+
-- `notes_plugin` — 90%+
-- `tireq_plugin` — 70%+
-- `core/agent` — 80%+
-- `core/tools` — 85%+
+- `calendar_plugin` — 100%
+- `notes_plugin` — 100%
+- `tireq_plugin` — 96%
+- `core/agent` — 91%
+- `core/tools` — 91%
+- `core/multi_agent` — 89%
 - `memory_sync` — 99%
 - `training_collect` — 81%
+- `cli` — 98%
+- `monitor.watcher` — 94%
+- `scheduler.engine` — 88%
 - `api/server` — 75%
-- `monitor.watcher` — 68%
 
 ## Priorytety dalszego pokrycia
 
 Pozostałe obszary z niskim pokryciem (wymagają zewnętrznych zależności):
 - `jarvis.integrations.telegram_bot` — 0% (wymaga Telegram API — pominięte)
 - `scripts.rag_query` (gałąź `query()`) — wymaga ChromaDB z danymi
+- `scripts.training_generate` — 59% (wymaga ANTHROPIC_API_KEY)
