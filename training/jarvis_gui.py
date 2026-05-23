@@ -139,6 +139,7 @@ class JarvisGUI(ctk.CTk):
         self._streaming = False
         self._recording = False
         self._response_buf: list[str] = []
+        self._saved_len = 0  # liczba wiadomości w ostatnio zapisanej sesji
 
         mem_ctx = _load_memory_context()
         self._system_msg = {
@@ -151,6 +152,7 @@ class JarvisGUI(ctk.CTk):
         self._refresh_sessions()
         self.after(400, self._check_connection)
         self._poll_queue()
+        self.protocol("WM_DELETE_WINDOW", self._on_close)
 
     # ── Layout ────────────────────────────────────────────────────────────────
 
@@ -495,10 +497,10 @@ class JarvisGUI(ctk.CTk):
                 font=ctk.CTkFont(size=10), anchor="w", wraplength=215,
             ).pack(fill="x", padx=4, pady=1)
 
-    def _save_session(self):
+    def _write_session_file(self) -> str | None:
+        """Zapisuje bieżącą rozmowę do memory/sessions/. Zwraca nazwę pliku lub None."""
         if len(self._history) < 2:
-            self._append_system("Za krótka rozmowa — nic do zapisania.")
-            return
+            return None
         sessions_dir = MEMORY_DIR / "sessions"
         sessions_dir.mkdir(parents=True, exist_ok=True)
         date_str = datetime.now().strftime("%Y-%m-%d_%H-%M")
@@ -514,11 +516,26 @@ class JarvisGUI(ctk.CTk):
         }
         f = sessions_dir / f"{date_str}.json"
         f.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
-        self._append_system(f"Sesja zapisana → {f.name}")
+        self._saved_len = len(self._history)
+        return f.name
+
+    def _save_session(self):
+        name = self._write_session_file()
+        if name is None:
+            self._append_system("Za krótka rozmowa — nic do zapisania.")
+            return
+        self._append_system(f"Sesja zapisana → {name}")
         self._refresh_sessions()
+
+    def _on_close(self):
+        """Auto-zapis sesji przy zamknięciu okna (jeśli są nowe wiadomości)."""
+        if len(self._history) >= 2 and len(self._history) > self._saved_len:
+            self._write_session_file()
+        self.destroy()
 
     def _clear_chat(self):
         self._history = []
+        self._saved_len = 0
         self._chat_box.configure(state="normal")
         self._chat_box._textbox.delete("1.0", "end")
         self._chat_box.configure(state="disabled")
