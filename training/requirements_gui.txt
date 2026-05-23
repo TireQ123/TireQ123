@@ -1,0 +1,8 @@
+# J.A.R.V.I.S. GUI — wymagania dla interfejsu graficznego
+# Instalacja: pip install -r training/requirements_gui.txt
+
+# Nowoczesny framework GUI (dark mode, cross-platform)
+customtkinter>=5.2.0
+
+# Opcjonalnie — tryb głosowy (wymaga GPU dla Whisper):
+# pip install sounddevice faster-whisper numpy pygame>=2.6.1

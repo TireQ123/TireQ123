@@ -12,6 +12,12 @@ echo   Lenovo Legion 5 / RTX 5060
 echo  ====================================================
 echo.
 
+:: Tryb uruchomienia — domyslnie GUI
+set MODE=gui
+if "%1"=="cli"   set MODE=cli
+if "%1"=="voice" set MODE=voice
+if "%1"=="text"  set MODE=cli
+
 :: Sprawdź czy Ollama jest zainstalowana
 where ollama >nul 2>&1
 if %errorlevel% neq 0 (
@@ -62,10 +68,20 @@ if %errorlevel% neq 0 (
     exit /b 0
 )
 
-:: Uruchom Jarvisa z pamięcią i streamingiem
-echo  [OK] Systemy gotowe. Uruchamiam Jarvisa...
+:: Uruchom wybrany tryb
+echo  [OK] Systemy gotowe.
 echo.
-python "%~dp0jarvis_ollama.py"
+
+if "%MODE%"=="gui" (
+    echo  [INFO] Uruchamiam interfejs graficzny...
+    python "%~dp0jarvis_gui.py"
+) else if "%MODE%"=="voice" (
+    echo  [INFO] Uruchamiam tryb głosowy...
+    python "%~dp0jarvis_voice.py"
+) else (
+    echo  [INFO] Uruchamiam tryb tekstowy (CLI)...
+    python "%~dp0jarvis_ollama.py"
+)
 
 echo.
 pause
