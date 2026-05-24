@@ -4,5 +4,5 @@
 # Nowoczesny framework GUI (dark mode, cross-platform)
 customtkinter>=5.2.0
 
-# Opcjonalnie — tryb głosowy (wymaga GPU dla Whisper):
-# pip install sounddevice faster-whisper numpy pygame>=2.6.1
+# Opcjonalnie — tryb głosowy (STT + TTS, pełna rozmowa głosowa):
+# pip install sounddevice faster-whisper numpy pygame>=2.6.1 edge-tts

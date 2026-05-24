@@ -138,6 +138,9 @@ class JarvisGUI(ctk.CTk):
         self._token_queue: queue.Queue = queue.Queue()
         self._streaming = False
         self._recording = False
+        self._speaking = False
+        self._voice_mode = False
+        self._last_response = ""
         self._response_buf: list[str] = []
         self._saved_len = 0  # liczba wiadomości w ostatnio zapisanej sesji
 
@@ -274,6 +277,14 @@ class JarvisGUI(ctk.CTk):
             fg_color="transparent", border_width=1,
         ).pack(side="left")
 
+        self._voice_mode_btn = ctk.CTkButton(
+            bot, text="🎙 Tryb głosowy", width=155, height=28,
+            font=ctk.CTkFont(size=11),
+            command=self._toggle_voice_mode,
+            fg_color="transparent", border_width=1,
+        )
+        self._voice_mode_btn.pack(side="left", padx=(6, 0))
+
         self._voice_lbl = ctk.CTkLabel(
             bot, text="", font=ctk.CTkFont(size=11), text_color="#ff9944",
         )
@@ -318,6 +329,7 @@ class JarvisGUI(ctk.CTk):
         full = "".join(self._response_buf)
         if full.strip():
             self._history.append({"role": "assistant", "content": full})
+            self._last_response = full
         self._response_buf = []
 
     # ── Wysyłanie ─────────────────────────────────────────────────────────────
@@ -386,6 +398,8 @@ class JarvisGUI(ctk.CTk):
                     self._finalize_jarvis_msg()
                     self._streaming = False
                     self._send_btn.configure(state="normal", text="▶  Wyślij")
+                    if self._voice_mode and self._last_response:
+                        self._speak_response(self._last_response)
         except queue.Empty:
             pass
         self.after(40, self._poll_queue)
@@ -393,7 +407,7 @@ class JarvisGUI(ctk.CTk):
     # ── Tryb głosowy ──────────────────────────────────────────────────────────
 
     def _toggle_voice(self):
-        if self._recording or self._streaming:
+        if self._recording or self._streaming or self._speaking:
             return
         self._recording = True
         self._voice_btn.configure(fg_color="#cc3333", text="⏹")
@@ -423,7 +437,10 @@ class JarvisGUI(ctk.CTk):
             self.after(0, lambda: self._voice_lbl.configure(text="⟳ Transkrybuję..."))
 
             from faster_whisper import WhisperModel
-            wm = WhisperModel("base", device="cuda", compute_type="float16")
+            try:
+                wm = WhisperModel("base", device="cuda", compute_type="float16")
+            except Exception:
+                wm = WhisperModel("base", device="cpu", compute_type="int8")
             segments, _ = wm.transcribe(tmp.name, language="pl")
             text = " ".join(s.text for s in segments).strip()
             os.unlink(tmp.name)
@@ -444,12 +461,97 @@ class JarvisGUI(ctk.CTk):
             self._recording = False
             self.after(0, lambda: self._voice_btn.configure(
                 fg_color="#1f5a8a", text="🎤"))
-            self.after(3000, lambda: self._voice_lbl.configure(text=""))
+            if not self._voice_mode:
+                self.after(3000, lambda: self._voice_lbl.configure(text=""))
 
     def _insert_voice(self, text: str):
         self._input_box.delete("1.0", "end")
         self._input_box.insert("1.0", text)
-        self._input_box.focus()
+        if self._voice_mode:
+            self._send_message()
+        else:
+            self._input_box.focus()
+
+    def _toggle_voice_mode(self):
+        self._voice_mode = not self._voice_mode
+        if self._voice_mode:
+            self._voice_mode_btn.configure(
+                fg_color="#1a5c1a", text="🎙 Tryb głosowy: ON",
+            )
+            self._append_system(
+                "Tryb głosowy aktywny — mów, Jarvis odpowie głosem. "
+                "Kliknij przycisk ponownie aby wyłączyć."
+            )
+            if not self._recording and not self._streaming:
+                self.after(500, self._toggle_voice)
+        else:
+            self._voice_mode_btn.configure(
+                fg_color="transparent", text="🎙 Tryb głosowy",
+            )
+            self._append_system("Tryb głosowy wyłączony.")
+
+    def _speak_response(self, text: str):
+        if not text.strip() or self._speaking:
+            return
+        self._speaking = True
+        self._voice_lbl.configure(text="🔊 Jarvis mówi...")
+        threading.Thread(target=self._tts_thread, args=(text,), daemon=True).start()
+
+    def _tts_thread(self, text: str):
+        import asyncio
+        import os
+        import tempfile
+        import time
+
+        tmp_path = None
+        try:
+            import edge_tts
+
+            async def _save(path: str) -> None:
+                await edge_tts.Communicate(text, "pl-PL-MarekNeural").save(path)
+
+            with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as f:
+                tmp_path = f.name
+            asyncio.run(_save(tmp_path))
+
+            try:
+                import pygame
+                pygame.mixer.init()
+                pygame.mixer.music.load(tmp_path)
+                pygame.mixer.music.play()
+                while pygame.mixer.music.get_busy():
+                    time.sleep(0.1)
+                pygame.mixer.music.unload()
+            except ImportError:
+                # Fallback bez pygame — ffplay jeśli dostępny
+                import subprocess
+                try:
+                    subprocess.run(
+                        ["ffplay", "-nodisp", "-autoexit", "-loglevel", "quiet", tmp_path],
+                        check=True,
+                    )
+                except Exception:
+                    self.after(0, lambda: self._voice_lbl.configure(
+                        text="Brak TTS: pip install pygame"))
+
+        except ImportError as exc:
+            pkg = "edge-tts" if "edge_tts" in str(exc) else "pygame"
+            self.after(0, lambda p=pkg: self._voice_lbl.configure(
+                text=f"Brak TTS: pip install {p}"))
+        except Exception as exc:
+            self.after(0, lambda e=str(exc): self._voice_lbl.configure(
+                text=f"Błąd TTS: {e[:45]}"))
+        finally:
+            self._speaking = False
+            if tmp_path and os.path.exists(tmp_path):
+                try:
+                    os.unlink(tmp_path)
+                except Exception:
+                    pass
+            if self._voice_mode and not self._streaming:
+                self.after(700, self._toggle_voice)
+            else:
+                self.after(0, lambda: self._voice_lbl.configure(text=""))
 
     # ── Pamięć i sesje ────────────────────────────────────────────────────────
 
@@ -529,6 +631,7 @@ class JarvisGUI(ctk.CTk):
 
     def _on_close(self):
         """Auto-zapis sesji przy zamknięciu okna (jeśli są nowe wiadomości)."""
+        self._voice_mode = False  # zatrzymaj pętlę głosową
         if len(self._history) >= 2 and len(self._history) > self._saved_len:
             self._write_session_file()
         self.destroy()
